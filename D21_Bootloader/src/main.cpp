@@ -6,13 +6,13 @@
  */ 
 
 
-#include "sam.h"
+#include <asf.h>
 
 
 int main(void)
 {
     /* Initialize the SAM system */
-    SystemInit();
+    system_init();
 
     /* Replace with your application code */
     while (1) 
