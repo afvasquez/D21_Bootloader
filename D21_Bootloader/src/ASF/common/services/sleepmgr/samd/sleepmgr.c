@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief User board configuration template
+ * \brief Chip-specific sleep manager configuration
  *
- * Copyright (C) 2013-2015 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2014-2015 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -43,9 +43,11 @@
 /*
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
+#include <compiler.h>
+#include <sleepmgr.h>
 
-#ifndef CONF_BOARD_H
-#define CONF_BOARD_H
+#if defined(CONFIG_SLEEPMGR_ENABLE) || defined(__DOXYGEN__)
 
-#define CONF_USBCDC_INTERFACE_SUPPORT	// SamBA Related
-#endif // CONF_BOARD_H
+uint8_t sleepmgr_locks[SLEEPMGR_NR_OF_MODES];
+
+#endif /* CONFIG_SLEEPMGR_ENABLE */

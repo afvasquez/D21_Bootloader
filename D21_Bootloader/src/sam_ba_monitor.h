@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief User board configuration template
+ * \brief Monitor functions for SAM-BA on SAM0
  *
- * Copyright (C) 2013-2015 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2015 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -44,8 +44,39 @@
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
 
-#ifndef CONF_BOARD_H
-#define CONF_BOARD_H
+#ifndef _MONITOR_SAM_BA_H_
+#define _MONITOR_SAM_BA_H_
 
-#define CONF_USBCDC_INTERFACE_SUPPORT	// SamBA Related
-#endif // CONF_BOARD_H
+#define SAM_BA_VERSION              "2.16"
+
+/* Selects USART as the communication interface of the monitor */
+#define SAM_BA_INTERFACE_USART      1
+/* Selects USB as the communication interface of the monitor */
+#define SAM_BA_INTERFACE_USBCDC     0
+
+/* Selects USB as the communication interface of the monitor */
+#define SIZEBUFMAX                  64
+
+/**
+ * \brief Initialize the monitor
+ *
+ */
+void sam_ba_monitor_init(uint8_t com_interface);
+
+/**
+ * \brief Main function of the SAM-BA Monitor
+ *
+ */
+void sam_ba_monitor_run(void);
+
+/**
+ * \brief
+ */
+void sam_ba_putdata_term(uint8_t* data, uint32_t length);
+
+/**
+ * \brief
+ */
+void call_applet(uint32_t address);
+
+#endif // _MONITOR_SAM_BA_H_

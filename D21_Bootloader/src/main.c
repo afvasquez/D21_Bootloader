@@ -6,11 +6,21 @@
  */ 
 
 
-#include <asf.h>
+#include "asf.h"
+#include "conf_board.h"
+#include "conf_clocks.h"
 #include "conf_bootloader.h"
+#include "sam_ba_monitor.h"
+#include "usart_sam_ba.h"
 
 #define BOOT_ENTER_SIGNAL	port_pin_set_output_level(BOOT_LED, 1)
 #define BOOT_EXIT_SIGNAL	port_pin_set_output_level(BOOT_LED, 0)
+
+static void check_start_application(void);
+
+#ifdef CONF_USBCDC_INTERFACE_SUPPORT
+static volatile bool main_b_cdc_enable = false;
+#endif
 
 /**
  * \brief Check the application startup condition
@@ -62,6 +72,7 @@ static void motor_control_shutdown(void) {
 	port_pin_set_config(MOTOR_PIN_CL, &config_port);
 	port_pin_set_config(BOOT_LED, &config_port);
 	port_pin_set_config(BOOT_ACTIVITY, &config_port);
+	port_pin_set_config(BOOT_ERROR, &config_port);
 
 	port_pin_set_output_level(MOTOR_PIN_PWM, 0);
 	port_pin_set_output_level(MOTOR_PIN_AH, 0);
@@ -85,9 +96,48 @@ int main(void)
     /* Initialize the SAM system */
     system_init();
 
-	port_pin_set_output_level(BOOT_ACTIVITY, true);
-    /* Replace with your application code */
-    while (1) 
-    {
-    }
+	udc_start();
+    
+	while ( !main_b_cdc_enable ) {  }
+
+	if(main_b_cdc_enable) {
+		sam_ba_monitor_init(SAM_BA_INTERFACE_USBCDC);
+		// SAM-BA on USB loop 
+		port_pin_set_output_level(BOOT_ACTIVITY, true);
+
+		while(1) {
+			sam_ba_monitor_run();
+		}
+	}
+
+	port_pin_set_output_level(BOOT_ERROR, true);
+	while (true) {
+	}
 }
+
+#ifdef CONF_USBCDC_INTERFACE_SUPPORT
+
+bool main_cdc_enable(uint8_t port)
+{
+	main_b_cdc_enable = true;
+	return true;
+}
+
+void main_cdc_disable(uint8_t port)
+{
+	main_b_cdc_enable = false;
+}
+
+void main_cdc_set_dtr(uint8_t port, bool b_enable)
+{
+}
+
+void main_cdc_rx_notify(uint8_t port)
+{
+}
+
+void main_cdc_set_coding(uint8_t port, usb_cdc_line_coding_t * cfg)
+{
+}
+
+#endif // CONF_USBCDC_INTERFACE_SUPPORT
