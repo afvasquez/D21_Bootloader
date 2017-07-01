@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief User board configuration template
+ * \brief SAM Serial Peripheral Interface Driver
  *
- * Copyright (C) 2013-2015 Atmel Corporation. All rights reserved.
+ * Copyright (C) 2012-2015 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -43,9 +43,30 @@
 /*
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
+#ifndef SERCOM_INTERRUPT_H_INCLUDED
+#define SERCOM_INTERRUPT_H_INCLUDED
 
-#ifndef CONF_BOARD_H
-#define CONF_BOARD_H
+#include "sercom.h"
+#include <system_interrupt.h>
 
-#define CONF_USBCDC_INTERFACE_SUPPORT	// SamBA Related
-#endif // CONF_BOARD_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Look-up table for device instances */
+extern void *_sercom_instances[SERCOM_INST_NUM];
+
+typedef void (*sercom_handler_t)(uint8_t instance);
+
+enum system_interrupt_vector _sercom_get_interrupt_vector(
+		Sercom *const sercom_instance);
+
+void _sercom_set_handler(
+		const uint8_t instance,
+		const sercom_handler_t interrupt_handler);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* SERCOM_INTERRUPT_H_INCLUDED */
